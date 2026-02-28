@@ -1,0 +1,522 @@
+title leap year (demake)
+author Julex2706
+
+background_color darkblue
+
+run_rules_on_level_start
+
+again_interval 0
+key_repeat_interval 0.1
+realtime_interval 0.1
+
+noundo
+norestart
+
+=====
+TAGS
+=====
+
+(cycle)
+cycleX = cycle0 cycle1 cycle2 cycle3
+
+(sprites)
+sprites = still crouch dead jump float drill
+
+(player)
+stillX = still1
+jumpX = jump0 jump1 jump2
+floatJX = floatJ0 floatJ1 floatJ2
+fallX = fall0 fall1 fall2 fall3 fall4 fall5 fall6 fall7 fall8
+deadX = dead1
+bounceX = bounce0 bounce1 bounce2 bounce3
+floatBX = floatB0 floatB1 floatB2 floatB3
+turnX = turn0
+
+digX = dig0 dig1
+
+stateX = stillX jumpX floatJX fallX deadX bounceX floatBX digX turnX
+
+initX = jump0 bounce0
+
+flags = lowered raised
+
+=========
+MAPPINGS
+=========
+
+(cycle)
+cycleX => cycleY
+cycle0 cycle1 cycle2 cycle3 -> cycle1 cycle2 cycle3 cycle0
+
+(jump)
+jumpX => jumpY
+jump0 jump1 jump2 -> jump0 jump2 still1
+
+(bounce)
+bounceX => bounceY
+bounce0 bounce1 bounce2 bounce3 -> bounce0 bounce2 bounce3 still1
+
+(float)
+jumpX => floatJ
+jump0 jump1 jump2 -> floatJ0 floatJ0 floatJ1
+
+floatJX => floatJY
+floatJ0 floatJ1 floatJ2 -> floatJ1 floatJ2 still1
+
+bounceX => floatB
+bounce0 bounce1 bounce2 bounce3 -> floatB0 floatB0 floatB1 floatB2
+
+floatBX => floatBY
+floatB0 floatB1 floatB2 floatB3 -> floatB1 floatB2 floatB3 still1
+
+(fall)
+fallX => fallY
+fall0 fall1 fall2 fall3 fall4 fall5 fall6 fall7 fall8 -> fall1 fall2 fall3 fall4 fall5 fall6 fall7 fall8 fall8
+
+fallX => land
+fall0 fall1 fall2 fall3 fall4 fall5 fall6 fall7 fall8 -> still1 still1 dead1 dead1 bounce0 bounce0 dig0 dig0 turn0
+
+(init)
+initX => initY
+jump0 bounce0 -> jump1 bounce1
+
+========
+OBJECTS
+========
+
+(basic)
+Background .
+orange
+
+
+Wall #
+brown
+
+
+ConditionalWall ?
+brown red
+10001
+01010
+00100
+01010
+10001
+
+CFlag
+transparent
+
+
+OneWay:directions
+brown
+00000
+.....
+.....
+.....
+.....
+
+OneWay:down
+transparent
+
+
+Flag:lowered
+darkblue
+.0...
+.0...
+.0...
+.0...
+00000
+
+Flag:raised
+darkblue red
+.0111
+.0111
+.0...
+.0...
+00000
+
+respawn:directions
+transparent
+
+
+Collectible
+pink
+.000.
+00000
+00000
+00000
+.000.
+
+
+Door d
+black
+.000.
+00000
+00000
+00000
+00000
+
+
+Spike:directions
+red
+.....
+..0..
+.000.
+.000.
+00000
+rot:up:>
+
+
+(sprites)
+Person:still:directions
+gray
+.000.
+.000.
+00000
+.000.
+.0.0.
+rot:down:>
+
+Person:crouch:directions
+gray
+.....
+.000.
+.000.
+00000
+.0.0.
+rot:down:>
+
+Person:jump:directions
+gray
+.000.
+00000
+.000.
+.000.
+.0.0.
+rot:down:>
+
+Person:float:directions
+gray
+.000.
+00000
+.000.
+00000
+.....
+rot:down:>
+
+Person:drill:directions
+gray darkgray
+11111
+00000
+.111.
+.000.
+..1..
+rot:down:>
+
+Person:dead:directions
+gray
+.....
+.....
+..0..
+.000.
+00000
+rot:down:>
+
+
+(cycle)
+cycle:cycleX
+transparent
+
+
+(player)
+Player:stillX:directions
+white
+copy: Person:still:directions
+
+
+Player:jumpX:directions
+white
+copy: Person:jump:directions
+
+Player:jump0:directions
+white
+copy: Person:crouch:directions
+
+Player:jump1:directions
+white
+copy: Person:crouch:directions
+
+
+Player:floatJX:directions
+white
+copy: Person:float:directions
+
+
+Player:fall0:directions
+white
+copy: Person:still:directions
+
+Player:fall1:directions
+white
+copy: Person:jump:directions
+
+Player:fall2:directions
+red
+copy: Person:jump:directions
+
+Player:fall3:directions
+red
+copy: Person:jump:directions
+
+Player:fall4:directions
+purple
+copy: Person:jump:directions
+
+Player:fall5:directions
+purple
+copy: Person:jump:directions
+
+Player:fall6:directions
+blue
+copy: Person:jump:directions
+
+Player:fall7:directions
+blue
+copy: Person:jump:directions
+
+Player:fall8:directions
+yellow
+copy: Person:jump:directions
+
+
+Player:deadX:directions
+gray
+copy: Person:still:directions
+
+
+Player:bounceX:directions
+purple
+copy: Person:jump:directions
+
+Player:bounce0:directions
+purple
+copy: Person:crouch:directions
+
+Player:bounce1:directions
+purple
+copy: Person:crouch:directions
+
+
+Player:floatBX:directions
+purple
+copy: Person:float:directions
+
+
+Player:dig0:directions
+blue
+copy: Person:crouch:directions
+
+Player:dig1:directions
+blue darkblue
+copy: Person:drill:directions
+
+
+Player:turn0:directions
+yellow
+copy: Person:crouch:directions
+
+=======
+LEGEND
+=======
+
+Player = Player:stateX:directions
+
+p = Player:still1:down and cycle:cycle0 and Flag:raised and respawn:down
+
+_ = OneWay:up
+
+f = Flag:lowered
++ = Flag:lowered and OneWay:up
+- = Flag:lowered and OneWay:up and Collectible
+c = Flag:lowered and Collectible
+
+e = Person:still:down
+
+s = Spike:up
+
+solid = Wall or ConditionalWall
+
+solid:up = solid or OneWay:up
+solid:down = solid or OneWay:down
+
+=======
+SOUNDS
+=======
+
+================
+COLLISIONLAYERS
+================
+
+Background
+
+--
+
+Wall
+ConditionalWall, CFlag
+directions -> OneWay:directions
+Door
+flags -> Flag:flags
+Person:sprites:directions
+Spike:directions
+Collectible
+
+--
+
+Player
+
+--
+
+cycle:cycleX
+respawn:directions
+
+======
+RULES
+======
+
+[] -> gosub init
+
+[ cycle:cycle0 ] -> gosub cycle0
+[ cycle:cycle1 ] -> gosub cycle1
+[ cycle:cycle2 ] -> gosub cycle2
+[ cycle:cycle3 ] -> gosub cycle3
+
+[ Player no cycle:cycleX ] [ cycle:cycleX ] -> [ Player cycle:cycleX ] []
+random [ cycle:cycleX ] -> [ cycle:cycleY ]
+[ cycle:cycleX no cycle:cycle0 ] -> again
+
+subroutine cycle0
+
+[] -> gosub player movement
+
+[] -> gosub float
+
+[] -> gosub dig
+
+[] -> gosub turn
+
+subroutine cycle1
+
+[] -> gosub fall
+
+subroutine cycle2
+
+[] -> gosub fall
+
+[] -> gosub jump
+
+subroutine cycle3
+
+[] -> gosub land
+
+[] -> gosub resolve
+
+[] -> gosub flags
+
+(subroutines)
+subroutine player movement
+
+[ action Player:deadX:directions ] -> gosub reset
+
+[ moving Player:deadX:directions ] -> [ stationary Player:deadX:directions ]
+horizontal [ > Player:dig1:directions | no solid ] -> [ | Player:still1:directions ]
+horizontal [ > Player:dig1:directions | solid ] -> [ | Wall Player:dig1:directions ]
+horizontal [ > Player | no solid ] -> [ | Player ]
+down [ action Player:stillX:> | solid:up ] -> [ Player:jump0:> | solid:up ]
++ up [ action Player:stillX:> | solid:down ] -> [ Player:jump0:> | solid:down ]
+[ moving Player ] -> [ stationary Player ]
+
+subroutine jump
+[ Player:jumpX:< no Player:jump0:< | Person:still:> ] -> [ Player:floatJ:< | Person:dead:> ]
+[ Player:jumpX:< no Player:jump0:< | Spike:< ] -> [ | Spike:< Player:dead1:< ]
+
+random [ Player:jumpX:< no Player:jump0:< | no solid ] -> [ | Player:jumpY:< ]
+jumpX [ Player:jumpX:< no Player:jump0:< | solid ] -> [ Player:floatJ:< | solid ]
+
+
+[ Player:bounceX:< no Player:bounce0:< | Person:still:> ] -> [ Player:floatB:< | Person:dead:> ]
+[ Player:bounceX:< no Player:bounce0:< | Spike:< ] -> [ | Spike:< Player:dead1:< ]
+
+random [ Player:bounceX:< no Player:bounce0:< | no solid ] -> [ | Player:bounceY:< ]
+bounceX [ Player:bounceX:< no Player:bounce0:< | solid ] -> [ Player:floatB:< | solid ]
+
+subroutine float
+random [ Player:floatJX:> ] -> [ Player:floatJY:> ]
+random [ Player:floatBX:> ] -> [ Player:floatBY:> ]
+
+subroutine fall
+[ Player:still1:> ] -> [ Player:fall0:> ]
+[ Player:fallX:> | Person:still:> ] -> [ Player:floatJ0:> | Person:dead:> ]
+[ Player:fallX:> | Spike:< ] -> [ | Player:dead1:> Spike:< ]
+random down [ Player:fallX:> | no solid:up ] -> [ | Player:fallY:> ]
++ up [ Player:fallX:> | no solid:down ] -> [ | Player:fallY:> ]
+
+subroutine land
+down fallX [ Player:fallX:> | solid:up ] -> [ Player:land:> | solid:up ]
++ up fallX [ Player:fallX:> | solid:down ] -> [ Player:land:> | solid:down ]
+
+subroutine dig
+[ Player:dig1:> | no solid ] -> [ | Player:still1:> ]
+random [ Player:dig1:> | solid ] -> [ | solid Player:dig1:> ]
+
+subroutine turn
+[ Player:turn0:> ] -> [ Player:still1:< ]
+
+subroutine resolve
+[ Player:initX:> ] -> [ Player:initY:> ]
+[ Player:dig0:> | ] -> [ | Player:dig1:> ]
+[ Player:dig1:> no solid ] -> [ Player:still1:> ]
+[ ConditionalWall ] -> [ CFlag ]
+[ CFlag ] [ Collectible ] -> [ ConditionalWall ] [ Collectible ]
+[ CFlag ] -> []
+
+
+subroutine init
+down [ | OneWay:up ] -> [ OneWay:down | OneWay:up ]
+
+
+subroutine flags
+down [ Player:still1:> Flag:lowered Collectible | solid:up ] [ Flag:raised ] -> [ Player:still1:> Flag:raised respawn:> | solid:up ] [ Flag:lowered ]
++ up [ Player:still1:> Flag:lowered Collectible | solid:down ] [ Flag:raised ] -> [ Player:still1:> Flag:raised respawn:> | solid:down ] [ Flag:lowered ]
+
+down [ Player:still1:> Flag:lowered | solid:up ] [ Flag:raised ] -> [ Player:still1:> Flag:raised respawn:> | solid:up ] [ Flag:lowered ]
++ up [ Player:still1:> Flag:lowered | solid:down ] [ Flag:raised ] -> [ Player:still1:> Flag:raised respawn:> | solid:down ] [ Flag:lowered ]
+
+
+subroutine reset
+random [ Player:dead1:> ] [ Flag:raised respawn:down ] -> [] [ Flag:raised respawn:down Player:still1:down ]
+
+random [ Player:dead1:> ] [ Flag:raised respawn:up ] -> [] [ Flag:raised respawn:up Player:still1:up ]
+[ Person:dead:> ] -> [ Person:still:> ]
+
+==============
+WINCONDITIONS
+==============
+
+no Collectible
+all Door on Player:still1:directions
+
+=======
+LEVELS
+=======
+
+######
+#.#..#
+#.#..#
+#d?pc#
+######
+
+########################
+####.c.##############...
+###.._..###########.....
+###........c..........##
+###.......###........_##
+###..p..########ss######
+########################
