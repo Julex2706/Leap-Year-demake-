@@ -17,6 +17,7 @@ I have implemented the following mechanics:
 *   **Characters**
 
 ### Feedback & Contribution
-Please feel free to test all features and provide **feedback**. Any help or suggestions are highly appreciated! 
+Please feel free to test all features and provide **feedback**. Any help or suggestions are highly appreciated!
+Also, if any of you can do pixelart, feel free to make some for me. Any squared sprite size is fine. I will not be able to pay you, but you will appear in the credits (This is not convincing, is it?).
 
 I have made an effort to keep the code **clean and easy to understand** for anyone who wants to take a look.
